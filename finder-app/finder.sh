@@ -5,7 +5,7 @@ searchstr=$2
 
 #check if the arguments are provided
 
-if [ -z "$filesdir" ] || [ -z "$searchstr "]; then
+if [ -z "$filesdir" ] || [ -z "$searchstr " ]; then
 	echo "Error: Both direstory and search string must be specified."
 	exit 1
 fi
