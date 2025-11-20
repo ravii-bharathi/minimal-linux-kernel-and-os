@@ -96,7 +96,7 @@ bool do_exec_redirect(const char *outputfile, int count, ...)
 	    }
 	    close(fd);
 
-	    execvp(command[0],command);
+	    exec(command[0],command);
 	    perror("execvp failed");
 	    exit(EXIT_FAILURE);
     }else{
