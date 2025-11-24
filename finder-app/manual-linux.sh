@@ -47,7 +47,10 @@ echo "Adding the Image in outdir"
 echo "Creating the staging directory for the root filesystem"
 cd "$OUTDIR"
 if [ -d "${OUTDIR}/rootfs" ];
+    	sudo rm  -rf ${OUTDIR}/rootfs
+fi
     		sudo rm  -rf ${OUTDIR}/rootfs
+
 	sudo mkdir -p "${OUTDIR}/rootfs"{/bin,/dev,/etc,/home,/lib,/proc,/sys,/tmp,/usr,/var}
 	chmod 1777 "${OUTDIR}/rootfs/tmp"
 
@@ -65,11 +68,15 @@ make ARCH=arm64 CROSS_COMPILE=${CROSS_COMPILE} defconfig
 make -j$(nproc) ARCH=arm64 CROSS_COMPILE=${CROSS_COMPILE}
 make ARCH=arm64 CROSS_COMPILE=${CROSS_COMPILE} CONFIG_PREFIX="${OUTDIR}/rootfs" install
 
+
+echo "Library dependencies"
+${CROSS_COMPILE}readelf -a ${OUTDIR}/bin/busybox | grep "program interpreter"
+${CROSS_COMPILE}readelf -a /bin/busybox | grep "Shared library"
+
 echo "Library dependencies: searching for dependencies in ~/bin/busybox"
 
 ${CROSS_COMPILE}readelf -a ~/bin/busybox | grep "program interpreter"
 ${CROSS_COMPILE}readelf -a ~/bin/busybox | grep "Shared library"
-
 
 # TODO: Add library dependencies to rootfs
 SYSROOT=$(${CROSS_COMPILE}gcc --print-sysroot)
