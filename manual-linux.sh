@@ -46,11 +46,16 @@ echo "Adding the Image in outdir"
 
 echo "Creating the staging directory for the root filesystem"
 cd "$OUTDIR"
-if [ -d "${OUTDIR}/rootfs" ];
-    	sudo rm  -rf ${OUTDIR}/rootfs
-fi
+if [ -d "${OUTDIR}/rootfs" ]; then
+	read -p "Rooftfs esists at ${OUTDIR}/roofts. Delete and start over? (y/n): " reply
+	if [[ "@reply" =~ ^[Yy]$ ]]; then
+		echo "Deleting rootfs directory at ${OUTDIR}/rootfs and starting over"
     		sudo rm  -rf ${OUTDIR}/rootfs
-
+	else
+		echo "Not deleting rootfs. Exiting script."
+		exit 1
+	fi
+fi
 	sudo mkdir -p "${OUTDIR}/rootfs"{/bin,/dev,/etc,/home,/lib,/proc,/sys,/tmp,/usr,/var}
 	chmod 1777 "${OUTDIR}/rootfs/tmp"
 
@@ -68,15 +73,21 @@ make ARCH=arm64 CROSS_COMPILE=${CROSS_COMPILE} defconfig
 make -j$(nproc) ARCH=arm64 CROSS_COMPILE=${CROSS_COMPILE}
 make ARCH=arm64 CROSS_COMPILE=${CROSS_COMPILE} CONFIG_PREFIX="${OUTDIR}/rootfs" install
 
-
-echo "Library dependencies"
-${CROSS_COMPILE}readelf -a ${OUTDIR}/bin/busybox | grep "program interpreter"
-${CROSS_COMPILE}readelf -a /bin/busybox | grep "Shared library"
-
 echo "Library dependencies: searching for dependencies in ~/bin/busybox"
 
-${CROSS_COMPILE}readelf -a ~/bin/busybox | grep "program interpreter"
-${CROSS_COMPILE}readelf -a ~/bin/busybox | grep "Shared library"
+${CROSS_COMPILE}readelf -a ~/bin/busybox | grep "program interpreter" READ_STATUS=$?
+echo "reafelf exit status: $READ_STATUS"
+if [ $READ_STATUS -ne 0 ]; then
+	echo "[ERROR] readelf failed with status $READ_STATUS for program interpreter on busybox"
+fi
+
+${CROSS_COMPILE}readelf -a ~/bin/busybox | grep "Shared library" READ_STATUS=$?
+echo "readeld exit status: $READ_STATUS"
+if [ $READ_STATUS -ne 0]; then
+	echo "[ERROR] readelf failed with status $READ_STATUS for shared library on busyboc"
+fi
+
+
 
 # TODO: Add library dependencies to rootfs
 SYSROOT=$(${CROSS_COMPILE}gcc --print-sysroot)
