@@ -2,7 +2,7 @@
 
 
 CC ?= gcc
-CROSS_COMPILE ?=
+CROSS_COMPILE ?= aarch64-none-linux-gnu-
 TARGET = writer
 SRC = writer.c
 OBJ = writer.o
