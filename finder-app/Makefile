@@ -1,7 +1,7 @@
 # finder-app/Makefile
 
 
-CC ?= gcc
+CC = gcc
 CROSS_COMPILE ?= aarch64-none-linux-gnu-
 TARGET = writer
 SRC = writer.c

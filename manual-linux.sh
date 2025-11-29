@@ -116,8 +116,8 @@ cp writer "${OUTDIR}/rootfs/home/"
 sudo mkdir -p "${OUTDIR}/rootfs/home/finder-app"
 sudo cp finder.sh                       "${OUTDIR}/rootfs/home/"
 sudo cp finder-test.sh                  "${OUTDIR}/rootfs/home/"
-sudo cp ~/repos/aeld-assignments/conf/* "${OUTDIR}/rootfs/home/"
-sudo cp ~/repos/aeld-assignments/autorun-qemu.sh "${OUTDIR}/rootfs/home/"
+sudo cp /home/ravi/repos/aeld-assignments/conf/* "${OUTDIR}/rootfs/home/"
+sudo cp /home/ravi/repos/aeld-assignments/autorun-qemu.sh "${OUTDIR}/rootfs/home/"
 sudo cp -r ./*                          "${OUTDIR}/rootfs/home/finder-app/"
 
 ########################
@@ -132,7 +132,7 @@ sudo chown -R root:root *
 
 cd ${OUTDIR}/rootfs
 find . | cpio -H newc -ov --owner root:root > ${OUTDIR}/initramfs.cpio
-gzip -f ${OUTDIR}/initramfs.cpio.gz
+gzip -f ${OUTDIR}/initramfs.cpio
 
 echo "process compelted"
 echo "process compelted "
