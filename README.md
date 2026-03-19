@@ -1,33 +1,38 @@
-# recent-repo actions
-assignmnet-3-part-1 - look for "workflow trigger"
-[![assignment-test](https://github.com/cu-ecen-aeld/assignments-3-and-later-ravii-bharathi/actions/workflows/github-actions.yml/badge.svg)](https://github.com/cu-ecen-aeld/assignments-3-and-later-ravii-bharathi/actions/workflows/github-actions.yml)
+# Minimal Linux Kernel Build + QEMU Emulation (ARM)
 
+**Pre-silicon verification workflow**: Built minimal Linux kernel from source, 
+configured device tree, and booted on QEMU ARM emulator. Demonstrates boot flow, 
+kernel bring-up, and emulation debugging skills.
 
-# aesd-assignments
-This repo contains public starter source code, scripts, and documentation for Advanced Embedded Software Development (ECEN-5713) and Advanced Embedded Linux Development assignments University of Colorado, Boulder.
+## Skills Demonstrated
+- Linux kernel build from source
+- Device tree configuration
+- QEMU ARM emulation
+- Bootloader → kernel → rootfs flow
+- Pre-silicon bring-up and validation
 
-## Setting Up Git
+## Tech Stack
+- Linux kernel v6.x
+- **QEMU** ARM64 emulation
+- **BusyBox** rootfs
+- Device tree overlays
+- Cross-compilation toolchain
 
-Use the instructions at [Setup Git](https://help.github.com/en/articles/set-up-git) to perform initial git setup steps. For AESD you will want to perform these steps inside your Linux host virtual or physical machine, since this is where you will be doing your development work.
+## Screenshots
+![Kernel boot on QEMU](screenshot1.jpg)
+![QEMU console with Linux shell](screenshot2.jpg)
+![Kernel config menu](screenshot3.jpg)
 
-## Setting up SSH keys
+## How to Build & Run
+```bash
+# Clone and build
+git clone https://github.com/yourusername/minimal-linux-kernel-qemu
+cd linux
+make ARCH=arm64 defconfig
+make ARCH=arm64 qemu_arm64_defconfig
+make -j$(nproc)
 
-See instructions in [Setting-up-SSH-Access-To-your-Repo](https://github.com/cu-ecen-aeld/aesd-assignments/wiki/Setting-up-SSH-Access-To-your-Repo) for details.
-
-## Specific Assignment Instructions
-
-Some assignments require further setup to pull in example code or make other changes to your repository before starting.  In this case, see the github classroom assignment start instructions linked from the assignment document for details about how to use this repository.
-
-## Testing
-
-The basis of the automated test implementation for this repository comes from [https://github.com/cu-ecen-aeld/assignment-autotest/](https://github.com/cu-ecen-aeld/assignment-autotest/)
-
-The assignment-autotest directory contains scripts useful for automated testing  Use
-```
-git submodule update --init --recursive
-```
-to synchronize after cloning and before starting each assignment, as discussed in the assignment instructions.
-
-As a part of the assignment instructions, you will setup your assignment repo to perform automated testing using github actions.  See [this page](https://github.com/cu-ecen-aeld/aesd-assignments/wiki/Setting-up-Github-Actions) for details.
-
-Note that the unit tests will fail on this repository, since assignments are not yet implemented.  That's your job :) 
+# Run in QEMU
+qemu-system-aarch64 -M virt -cpu cortex-a57 -smp 1 -m 512M \
+  -kernel arch/arm64/boot/Image -initrd rootfs.cpio.gz \
+  -nographic -append "console=ttyAMA0"
